@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.upgrad.quora.api.model.AnswerDeleteResponse;
 import com.upgrad.quora.api.model.AnswerEditRequest;
 import com.upgrad.quora.api.model.AnswerRequest;
 import com.upgrad.quora.api.model.AnswerResponse;
@@ -59,5 +60,13 @@ public class AnswerController {
 		   final AnswerEntity postedAnswer = answerService.editAnswer(authorizationToken, answerId, answerEntity);
 		   AnswerResponse answerResponse = new AnswerResponse().id(postedAnswer.getUuid()).status("ANSWER EDITED");
 		   return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.CREATED);
+	}
+	
+	@RequestMapping(method = RequestMethod.DELETE, path = "/answer/delete/{answerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<AnswerDeleteResponse> deleteAnswer (@PathVariable("answerId") String answerId,
+			@RequestHeader("authorization") final String authorizationToken) throws AuthorizationFailedException, InvalidQuestionException, AnswerNotFoundException{
+		answerService.deleteAnswer(authorizationToken, answerId);
+		AnswerDeleteResponse answerDeleteResponse = new AnswerDeleteResponse().id(answerId).status("ANSWER DELETED");
+		 return new ResponseEntity<AnswerDeleteResponse>(answerDeleteResponse,HttpStatus.OK);
 	}
 }

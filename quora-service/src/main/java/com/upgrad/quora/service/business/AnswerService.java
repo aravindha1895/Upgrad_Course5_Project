@@ -10,6 +10,7 @@ import com.upgrad.quora.service.dao.QuestionDao;
 import com.upgrad.quora.service.entity.AnswerEntity;
 import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
+import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
@@ -22,6 +23,7 @@ public class AnswerService {
 	@Autowired
 	QuestionDao questionDao;
 
+	private static final String ADMIN_ROLE = "admin";
 	@Transactional(propagation = Propagation.REQUIRED)
 	public AnswerEntity postAnswerForQuestion(final String authorizationToken, String questionId,
 			AnswerEntity answerEntity) throws AuthorizationFailedException, InvalidQuestionException {
@@ -59,7 +61,27 @@ public class AnswerService {
 
 		return answerEntity;
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void deleteAnswer(final String authorizationToken, String answerId)
+			throws AuthorizationFailedException, InvalidQuestionException, AnswerNotFoundException {
 
+		UserAuthTokenEntity userAuthTokenEntity = questionDao.getUserAuthToken(authorizationToken);
+		validateUserAuthToken(userAuthTokenEntity,"delete an answer");
+		AnswerEntity existingAnswerEntity = answerDao.getAnswerByID(answerId);
+		
+		if (existingAnswerEntity == null) {
+			throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
+		} else {
+			UserEntity answerOwner = existingAnswerEntity.getUser();
+			if(answerOwner.getId()!=userAuthTokenEntity.getUser().getId()) {
+				if(!answerOwner.getRole().equals(ADMIN_ROLE))
+					throw new AuthorizationFailedException("ATHR-003", "Only the answer owner or admin can delete the answer");
+			} else {
+				answerDao.deleteAnswer(existingAnswerEntity);
+			}
+		}
+	}
 	private void validateUserAuthToken(UserAuthTokenEntity userAuthTokenEntity, String suffixMessage) throws AuthorizationFailedException {
 		if (userAuthTokenEntity == null) {
 			throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
