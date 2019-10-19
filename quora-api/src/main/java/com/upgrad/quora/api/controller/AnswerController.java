@@ -14,10 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.upgrad.quora.api.model.AnswerEditRequest;
 import com.upgrad.quora.api.model.AnswerRequest;
 import com.upgrad.quora.api.model.AnswerResponse;
 import com.upgrad.quora.service.business.AnswerService;
 import com.upgrad.quora.service.entity.AnswerEntity;
+import com.upgrad.quora.service.exception.AnswerNotFoundException;
+import com.upgrad.quora.service.exception.AuthorizationFailedException;
+import com.upgrad.quora.service.exception.InvalidQuestionException;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -35,17 +39,25 @@ public class AnswerController {
     @ApiResponse(code = 2003, message = "Successful operation", response = AnswerResponse.class)
 	})
 	public ResponseEntity<AnswerResponse> createAnswer(@PathVariable("questionId") String questionId,
-			@RequestHeader("authorization") final String authorizationToken, @RequestBody AnswerRequest answerRequest) {
-	//	System.out.println(authorizationToken);
-		// System.out.println(questionId);
-	   // System.out.println(answerRequest.toString());
+			@RequestHeader("authorization") final String authorizationToken, @RequestBody AnswerRequest answerRequest) throws AuthorizationFailedException, InvalidQuestionException {
 	   AnswerEntity answerEntity = new AnswerEntity();
 	   answerEntity.setAnswer(answerRequest.getAnswer());
-	   answerEntity.setQuestionId(Integer.parseInt(questionId));
 	   answerEntity.setDate(ZonedDateTime.now());
 	   answerEntity.setUuid(UUID.randomUUID().toString());
 	   final AnswerEntity postedAnswer = answerService.postAnswerForQuestion(authorizationToken, questionId, answerEntity);
 	   AnswerResponse answerResponse = new AnswerResponse().id(postedAnswer.getUuid()).status("ANSWER CREATED");
 	   return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.CREATED);
+	}
+	
+	@RequestMapping(method = RequestMethod.PUT, path = "/answer/edit/{answerId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<AnswerResponse> editAnswerContent (@PathVariable("answerId") String answerId,
+			@RequestHeader("authorization") final String authorizationToken, @RequestBody AnswerEditRequest answerEditRequest) throws AuthorizationFailedException, InvalidQuestionException, AnswerNotFoundException{
+		   AnswerEntity answerEntity = new AnswerEntity();
+		   answerEntity.setAnswer(answerEditRequest.getContent());
+		   answerEntity.setDate(ZonedDateTime.now());
+		   answerEntity.setUuid(answerId);
+		   final AnswerEntity postedAnswer = answerService.editAnswer(authorizationToken, answerId, answerEntity);
+		   AnswerResponse answerResponse = new AnswerResponse().id(postedAnswer.getUuid()).status("ANSWER EDITED");
+		   return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.CREATED);
 	}
 }
