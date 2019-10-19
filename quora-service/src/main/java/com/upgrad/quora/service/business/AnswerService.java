@@ -1,5 +1,7 @@
 package com.upgrad.quora.service.business;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -80,6 +82,18 @@ public class AnswerService {
 			} else {
 				answerDao.deleteAnswer(existingAnswerEntity);
 			}
+		}
+	}
+	
+	
+	public List<AnswerEntity> getAllAnswersToQuestion(final String authorizationToken, String questionId) throws AuthorizationFailedException, InvalidQuestionException {
+		UserAuthTokenEntity userAuthTokenEntity = questionDao.getUserAuthToken(authorizationToken);
+		validateUserAuthToken(userAuthTokenEntity,"get the answers");
+		QuestionEntity questionEntity = questionDao.getQuestion(questionId);
+		if (questionEntity == null) {
+			throw new InvalidQuestionException("QUES-001", "The question with entered uuid whose details are to be seen does not exist");
+		} else {
+			return answerDao.getAllAnswersByQuestion(questionEntity);
 		}
 	}
 	private void validateUserAuthToken(UserAuthTokenEntity userAuthTokenEntity, String suffixMessage) throws AuthorizationFailedException {

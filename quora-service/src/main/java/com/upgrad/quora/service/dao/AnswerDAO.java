@@ -1,5 +1,7 @@
 package com.upgrad.quora.service.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -36,5 +38,14 @@ public class AnswerDAO {
 	
 	public void deleteAnswer(AnswerEntity answerEntity) {
 		entityManager.remove(answerEntity);
+	}
+	
+	public List<AnswerEntity> getAllAnswersByQuestion(QuestionEntity question){
+		try {
+			return entityManager.createNamedQuery("answersByQuestionID", AnswerEntity.class).setParameter("questionEntity", question)
+					.getResultList();
+		} catch (NoResultException nre) {
+			return null;
+		}
 	}
 }

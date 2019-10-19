@@ -21,7 +21,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import javax.persistence.*;
 
 @NamedQueries({
-        @NamedQuery(name = "answerByID", query = "select ans from AnswerEntity ans where ans.uuid = :uuid")
+        @NamedQuery(name = "answerByID", query = "select ans from AnswerEntity ans where ans.uuid = :uuid"),
+        @NamedQuery(name = "answersByQuestionID", query = "select ans from AnswerEntity ans where ans.questionEntity = :questionEntity")
 })
 
 @Entity
