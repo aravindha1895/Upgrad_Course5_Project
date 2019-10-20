@@ -44,7 +44,7 @@ public class AnswerController {
 	@ApiOperation(value = "Create a answer for question by giving question ID", response =AnswerResponse.class )
 	@ApiResponses(value = {
 			@ApiResponse( message = "ANSWER CREATED", response = AnswerResponse.class, code = 201),
-			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 401),
+			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
 			@ApiResponse( message = "Question entity not found", response = InvalidQuestionException.class, code = 404)
 			})
 	public ResponseEntity<AnswerResponse> createAnswer(@PathVariable("questionId") String questionId,
@@ -63,9 +63,8 @@ public class AnswerController {
 	@ApiOperation(value = "Edit already existing answer by giving answer ID", response =AnswerResponse.class )
 	@ApiResponses(value = {
 			@ApiResponse( message = "ANSWER EDITED", response = AnswerResponse.class, code = 201),
-			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 401),
-			@ApiResponse( message = "Question entity not found", response = InvalidQuestionException.class, code = 404),
-			@ApiResponse( message = "Answer entity not found", response = AnswerNotFoundException.class, code = 404)
+			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
+			@ApiResponse( message = "Question / Answer entity not found", response = InvalidQuestionException.class, code = 404)
 			})
 	@RequestMapping(method = RequestMethod.PUT, path = "/answer/edit/{answerId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<AnswerResponse> editAnswerContent(@PathVariable("answerId") String answerId,
@@ -84,9 +83,9 @@ public class AnswerController {
 	@ApiOperation(value = "Delete existing answer by giving answer ID", response =AnswerDeleteResponse.class )
 	@ApiResponses(value = {
 			@ApiResponse( message = "ANSWER DELETED", response = AnswerDeleteResponse.class, code = 200),
-			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 401),
-			@ApiResponse( message = "Question entity not found", response = InvalidQuestionException.class, code = 404),
-			@ApiResponse( message = "Answer entity not found", response = AnswerNotFoundException.class, code = 404) })
+			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
+			@ApiResponse( message = "Question / Answer entity not found", response = InvalidQuestionException.class, code = 404),
+		 })
 	@RequestMapping(method = RequestMethod.DELETE, path = "/answer/delete/{answerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<AnswerDeleteResponse> deleteAnswer(@PathVariable("answerId") String answerId,
 			@RequestHeader("authorization") final String authorizationToken)
@@ -99,9 +98,9 @@ public class AnswerController {
 	@ApiOperation(value = "Fetch all answers for a question ID", response =AnswerDetailsResponse.class )
 	@ApiResponses(value = {
 			@ApiResponse( message = "Returns the list of answers", response = AnswerDetailsResponse.class, code = 200),
-			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 401),
-			@ApiResponse( message = "Question entity not found", response = InvalidQuestionException.class, code = 404),
-			@ApiResponse( message = "Answer entity not found", response = AnswerNotFoundException.class, code = 404) })
+			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
+			@ApiResponse( message = "Question / Answer entity not found", response = InvalidQuestionException.class, code = 404),
+			 })
 	@RequestMapping(method = RequestMethod.GET, path = "answer/all/{questionId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<List<AnswerDetailsResponse>> getAllAnswersToQuestion(
 			@PathVariable("questionId") String questionId,
