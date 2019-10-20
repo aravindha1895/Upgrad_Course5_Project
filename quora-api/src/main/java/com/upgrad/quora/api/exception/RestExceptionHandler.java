@@ -23,7 +23,7 @@ public class RestExceptionHandler {
 
 
         return new ResponseEntity<ErrorResponse>(
-                new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()), HttpStatus.UNAUTHORIZED
+                new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()), HttpStatus.FORBIDDEN
         );
 
     }
@@ -44,7 +44,7 @@ public class RestExceptionHandler {
 
 
         return new ResponseEntity<ErrorResponse>(
-                new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()), HttpStatus.NOT_FOUND
+                new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()), HttpStatus.FORBIDDEN
         );
 
     }
@@ -61,7 +61,7 @@ public class RestExceptionHandler {
     
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> genericExceptionHandler(Exception exe, WebRequest request){
-
+    	exe.printStackTrace();
         return new ResponseEntity<ErrorResponse>(
         		new ErrorResponse().code("GEN-001").message("An unexpected error occurred. Please contact System Administrator"), HttpStatus.INTERNAL_SERVER_ERROR
         );
