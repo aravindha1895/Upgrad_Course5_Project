@@ -17,11 +17,13 @@ public class AnswerDAO {
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	/* Saves answer in database */
 	public AnswerEntity saveAnswer(AnswerEntity answerEntity) {
 		entityManager.persist(answerEntity);
 		return answerEntity;
 	}
 
+	/* Return single answer corresponding to ID. Returns NULL if n result */
 	public AnswerEntity getAnswerByID(String answerUUID) {
 
 		try {
@@ -32,14 +34,17 @@ public class AnswerDAO {
 		}
 	}
 	
+	/* Updates existing answer */
 	public AnswerEntity updateAnswer(AnswerEntity answerEntity) {
 		 return entityManager.merge(answerEntity);
 	}
 	
+	/* Delete existing answer */
 	public void deleteAnswer(AnswerEntity answerEntity) {
 		entityManager.remove(answerEntity);
 	}
 	
+	/* Get all answer by question */
 	public List<AnswerEntity> getAllAnswersByQuestion(QuestionEntity question){
 		try {
 			return entityManager.createNamedQuery("answersByQuestionID", AnswerEntity.class).setParameter("questionEntity", question)

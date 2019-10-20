@@ -50,6 +50,7 @@ public class AnswerController {
 	public ResponseEntity<AnswerResponse> createAnswer(@PathVariable("questionId") String questionId,
 			@RequestHeader("authorization") final String authorizationToken, @RequestBody AnswerRequest answerRequest)
 			throws AuthorizationFailedException, InvalidQuestionException {
+		// Setting some attributes of answer entity from request
 		AnswerEntity answerEntity = new AnswerEntity();
 		answerEntity.setAnswer(answerRequest.getAnswer());
 		answerEntity.setDate(ZonedDateTime.now());
@@ -71,6 +72,7 @@ public class AnswerController {
 			@RequestHeader("authorization") final String authorizationToken,
 			@RequestBody AnswerEditRequest answerEditRequest)
 			throws AuthorizationFailedException, InvalidQuestionException, AnswerNotFoundException {
+		// Setting some attributes of answer entity from request
 		AnswerEntity answerEntity = new AnswerEntity();
 		answerEntity.setAnswer(answerEditRequest.getContent());
 		answerEntity.setDate(ZonedDateTime.now());
@@ -91,6 +93,7 @@ public class AnswerController {
 			@RequestHeader("authorization") final String authorizationToken)
 			throws AuthorizationFailedException, AnswerNotFoundException, InvalidQuestionException {
 		answerService.deleteAnswer(authorizationToken, answerId);
+		/* If we reach this point, then no exception happened and delete operation is success */
 		AnswerDeleteResponse answerDeleteResponse = new AnswerDeleteResponse().id(answerId).status("ANSWER DELETED");
 		return new ResponseEntity<AnswerDeleteResponse>(answerDeleteResponse, HttpStatus.OK);
 	}
@@ -108,6 +111,7 @@ public class AnswerController {
 			throws AuthorizationFailedException, InvalidQuestionException, AnswerNotFoundException {
 		List<AnswerEntity> answerList = answerService.getAllAnswersToQuestion(authorizationToken, questionId);
 		List<AnswerDetailsResponse> answerDetailsResponseList = new ArrayList<AnswerDetailsResponse>();
+		// Forming response from entity
 		for (AnswerEntity answer : answerList) {
 			answerDetailsResponseList.add(new AnswerDetailsResponse().id(answer.getUuid())
 					.answerContent(answer.getAnswer()).questionContent(answer.getQuestionEntity().getContent()));
