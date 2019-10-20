@@ -20,10 +20,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 
-@NamedQueries({
-        @NamedQuery(name = "answerByID", query = "select ans from AnswerEntity ans where ans.uuid = :uuid"),
-        @NamedQuery(name = "answersByQuestionID", query = "select ans from AnswerEntity ans where ans.questionEntity = :questionEntity")
-})
+@NamedQueries({ @NamedQuery(name = "answerByID", query = "select ans from AnswerEntity ans where ans.uuid = :uuid"),
+		@NamedQuery(name = "answersByQuestionID", query = "select ans from AnswerEntity ans where ans.questionEntity = :questionEntity") })
 
 @Entity
 @Table(name = "answer")
@@ -43,22 +41,17 @@ public class AnswerEntity {
 	@Size(max = 225)
 	private String answer;
 
-	 @ManyToOne
-	 @JoinColumn(name = "USER_ID")
-	 private UserEntity user;
-	 
-	 @ManyToOne
-	 @JoinColumn(name = "question_id")
-	// @NotNull
-	 private QuestionEntity questionEntity;
+	@ManyToOne
+	@JoinColumn(name = "USER_ID")
+	private UserEntity user;
 
-	/*@Version
-	@Column(name = "VERSION", length = 19, nullable = false)
-	private Long version;*/
-	
-    @Column(name = "date")
-    @NotNull
-    private ZonedDateTime date;
+	@ManyToOne
+	@JoinColumn(name = "question_id")
+	private QuestionEntity questionEntity;
+
+	@Column(name = "date")
+	@NotNull
+	private ZonedDateTime date;
 
 	public Integer getId() {
 		return id;
@@ -84,7 +77,6 @@ public class AnswerEntity {
 		this.answer = answer;
 	}
 
-
 	public ZonedDateTime getDate() {
 		return date;
 	}
@@ -108,19 +100,19 @@ public class AnswerEntity {
 	public void setQuestionEntity(QuestionEntity questionEntity) {
 		this.questionEntity = questionEntity;
 	}
-    
-    @Override
-    public boolean equals(Object obj) {
-        return new EqualsBuilder().append(this, obj).isEquals();
-    }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(this).hashCode();
-    }
+	@Override
+	public boolean equals(Object obj) {
+		return new EqualsBuilder().append(this, obj).isEquals();
+	}
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-    }
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(this).hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 }

@@ -33,22 +33,22 @@ public class AnswerDAO {
 			return null;
 		}
 	}
-	
+
 	/* Updates existing answer */
 	public AnswerEntity updateAnswer(AnswerEntity answerEntity) {
-		 return entityManager.merge(answerEntity);
+		return entityManager.merge(answerEntity);
 	}
-	
+
 	/* Delete existing answer */
 	public void deleteAnswer(AnswerEntity answerEntity) {
 		entityManager.remove(answerEntity);
 	}
-	
+
 	/* Get all answer by question */
-	public List<AnswerEntity> getAllAnswersByQuestion(QuestionEntity question){
+	public List<AnswerEntity> getAllAnswersByQuestion(QuestionEntity question) {
 		try {
-			return entityManager.createNamedQuery("answersByQuestionID", AnswerEntity.class).setParameter("questionEntity", question)
-					.getResultList();
+			return entityManager.createNamedQuery("answersByQuestionID", AnswerEntity.class)
+					.setParameter("questionEntity", question).getResultList();
 		} catch (NoResultException nre) {
 			return null;
 		}

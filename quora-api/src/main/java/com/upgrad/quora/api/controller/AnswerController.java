@@ -40,13 +40,10 @@ public class AnswerController {
 
 	@RequestMapping(method = RequestMethod.POST, path = "/question/{questionId}/answer/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
-	
-	@ApiOperation(value = "Create a answer for question by giving question ID", response =AnswerResponse.class )
-	@ApiResponses(value = {
-			@ApiResponse( message = "ANSWER CREATED", response = AnswerResponse.class, code = 201),
-			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
-			@ApiResponse( message = "Question entity not found", response = InvalidQuestionException.class, code = 404)
-			})
+	@ApiOperation(value = "Create a answer for question by giving question ID", response = AnswerResponse.class)
+	@ApiResponses(value = { @ApiResponse(message = "ANSWER CREATED", response = AnswerResponse.class, code = 201),
+			@ApiResponse(message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
+			@ApiResponse(message = "Question entity not found", response = InvalidQuestionException.class, code = 404) })
 	public ResponseEntity<AnswerResponse> createAnswer(@PathVariable("questionId") String questionId,
 			@RequestHeader("authorization") final String authorizationToken, @RequestBody AnswerRequest answerRequest)
 			throws AuthorizationFailedException, InvalidQuestionException {
@@ -60,13 +57,11 @@ public class AnswerController {
 		AnswerResponse answerResponse = new AnswerResponse().id(postedAnswer.getUuid()).status("ANSWER CREATED");
 		return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.CREATED);
 	}
-	
-	@ApiOperation(value = "Edit already existing answer by giving answer ID", response =AnswerResponse.class )
-	@ApiResponses(value = {
-			@ApiResponse( message = "ANSWER EDITED", response = AnswerResponse.class, code = 201),
-			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
-			@ApiResponse( message = "Question / Answer entity not found", response = InvalidQuestionException.class, code = 404)
-			})
+
+	@ApiOperation(value = "Edit already existing answer by giving answer ID", response = AnswerResponse.class)
+	@ApiResponses(value = { @ApiResponse(message = "ANSWER EDITED", response = AnswerResponse.class, code = 201),
+			@ApiResponse(message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
+			@ApiResponse(message = "Question / Answer entity not found", response = InvalidQuestionException.class, code = 404) })
 	@RequestMapping(method = RequestMethod.PUT, path = "/answer/edit/{answerId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<AnswerResponse> editAnswerContent(@PathVariable("answerId") String answerId,
 			@RequestHeader("authorization") final String authorizationToken,
@@ -82,28 +77,28 @@ public class AnswerController {
 		return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.CREATED);
 	}
 
-	@ApiOperation(value = "Delete existing answer by giving answer ID", response =AnswerDeleteResponse.class )
-	@ApiResponses(value = {
-			@ApiResponse( message = "ANSWER DELETED", response = AnswerDeleteResponse.class, code = 200),
-			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
-			@ApiResponse( message = "Question / Answer entity not found", response = InvalidQuestionException.class, code = 404),
-		 })
+	@ApiOperation(value = "Delete existing answer by giving answer ID", response = AnswerDeleteResponse.class)
+	@ApiResponses(value = { @ApiResponse(message = "ANSWER DELETED", response = AnswerDeleteResponse.class, code = 200),
+			@ApiResponse(message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
+			@ApiResponse(message = "Question / Answer entity not found", response = InvalidQuestionException.class, code = 404), })
 	@RequestMapping(method = RequestMethod.DELETE, path = "/answer/delete/{answerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<AnswerDeleteResponse> deleteAnswer(@PathVariable("answerId") String answerId,
 			@RequestHeader("authorization") final String authorizationToken)
 			throws AuthorizationFailedException, AnswerNotFoundException, InvalidQuestionException {
 		answerService.deleteAnswer(authorizationToken, answerId);
-		/* If we reach this point, then no exception happened and delete operation is success */
+		/*
+		 * If we reach this point, then no exception happened and delete operation is
+		 * success
+		 */
 		AnswerDeleteResponse answerDeleteResponse = new AnswerDeleteResponse().id(answerId).status("ANSWER DELETED");
 		return new ResponseEntity<AnswerDeleteResponse>(answerDeleteResponse, HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "Fetch all answers for a question ID", response =AnswerDetailsResponse.class )
+	@ApiOperation(value = "Fetch all answers for a question ID", response = AnswerDetailsResponse.class)
 	@ApiResponses(value = {
-			@ApiResponse( message = "Returns the list of answers", response = AnswerDetailsResponse.class, code = 200),
-			@ApiResponse( message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
-			@ApiResponse( message = "Question / Answer entity not found", response = InvalidQuestionException.class, code = 404),
-			 })
+			@ApiResponse(message = "Returns the list of answers", response = AnswerDetailsResponse.class, code = 200),
+			@ApiResponse(message = "Authorization failed", response = AuthorizationFailedException.class, code = 403),
+			@ApiResponse(message = "Question / Answer entity not found", response = InvalidQuestionException.class, code = 404), })
 	@RequestMapping(method = RequestMethod.GET, path = "answer/all/{questionId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<List<AnswerDetailsResponse>> getAllAnswersToQuestion(
 			@PathVariable("questionId") String questionId,
