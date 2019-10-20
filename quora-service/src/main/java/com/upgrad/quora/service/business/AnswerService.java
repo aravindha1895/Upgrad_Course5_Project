@@ -30,11 +30,11 @@ public class AnswerService {
 	public AnswerEntity postAnswerForQuestion(final String authorizationToken, String questionId,
 			AnswerEntity answerEntity) throws AuthorizationFailedException, InvalidQuestionException {
 		UserAuthTokenEntity userAuthTokenEntity = questionDao.getUserAuthToken(authorizationToken);
-		validateUserAuthToken(userAuthTokenEntity, "post a question");
+		validateUserAuthToken(userAuthTokenEntity, "post an answer");
 		answerEntity.setUser(userAuthTokenEntity.getUser());
 		QuestionEntity questionEntity = questionDao.getQuestion(questionId);
 		if (questionEntity == null) {
-			throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
+			throw new InvalidQuestionException("QUES-001", "The question entered is invalid");
 		} else {
 			answerEntity.setQuestionEntity(questionEntity);
 			answerDao.saveAnswer(answerEntity);
@@ -51,7 +51,7 @@ public class AnswerService {
 		AnswerEntity existingAnswerEntity = answerDao.getAnswerByID(answerId);
 		if (existingAnswerEntity == null) {
 			throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
-		} else if(!existingAnswerEntity.getUser().equals(userAuthTokenEntity.getUser())) {
+		} else if(existingAnswerEntity.getUser().getId()!=userAuthTokenEntity.getUser().getId()) {
 			throw new AuthorizationFailedException("ATHR-003", "Only the answer owner can edit the answer");
 		} else {
 			answerEntity.setId(existingAnswerEntity.getId());
